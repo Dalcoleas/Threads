@@ -9,15 +9,25 @@ package Banco;
  *
  * @author Alvaro García <alvarogarcia1010 at github.com>
  */
-public class Transaccion {
+public class Transaccion extends Thread {
     
     private Cajera cajera;
     private Cliente cliente;
-    private String transaccion;
+    private String[] transaccion;
+    private long timeStamp;
 
-    public Transaccion(Cajera cajera, Cliente cliente, String transaccion) {
+    public Transaccion(Cajera cajera, Cliente cliente, String[] transaccion, long initialTime) {
         this.cajera = cajera;
         this.cliente = cliente;
+        this.transaccion = transaccion;
+        this.timeStamp = initialTime;
+    }
+
+    public String[] getTransaccion() {
+        return transaccion;
+    }
+
+    public void setTransaccion(String[] transaccion) {
         this.transaccion = transaccion;
     }
 
@@ -37,31 +47,24 @@ public class Transaccion {
         this.cliente = cliente;
     }
 
-    public String getTransaccion() {
-        return transaccion;
-    }
-
-    public void setTransaccion(String transaccion) {
-        this.transaccion = transaccion;
-    }
-
-    public void procesarTransaccion(long timeStamp) {
+    @Override
+    public void run() {
 
             System.out.println("La cajera " + this.cajera.getNombre() + 
-                            " COMIENZA A PROCESAR LA TRANSACCION DEL CLIENTE " + cliente.getNombre() + 
-                            " EN EL TIEMPO: " + (System.currentTimeMillis() - timeStamp) / 1000	+
+                            " COMIENZA A PROCESAR LAS TRANSACCIONEs  DEL CLIENTE " + cliente.getNombre() + 
+                            " EN EL TIEMPO: " + (System.currentTimeMillis() - this.timeStamp) / 1000	+
                             "seg");
-// PASAR A ARRAY LIST EN TRANSACCIONES
-//            for (int i = 0; i < cliente.getCarroCompra().length; i++) { 
-//                            this.esperarXsegundos(cliente.getCarroCompra()[i]); 
-//                            System.out.println("Procesado el producto " + (i + 1) +  
-//                            " ->Tiempo: " + (System.currentTimeMillis() - timeStamp) / 1000 + 
-//                            "seg");
-//            }
+
+            for (int i = 0; i < this.transaccion.length; i++) { 
+                this.esperarXsegundos(i); 
+                System.out.println("Procesado la transaccion " + this.transaccion[i] +  
+                " ->Tiempo: " + (System.currentTimeMillis() - this.timeStamp) / 1000 + 
+                "seg");
+            }
 
             System.out.println("La cajera " + this.cajera.getNombre() + " HA TERMINADO DE PROCESAR " + 
                             cliente.getNombre() + " EN EL TIEMPO: " + 
-                            (System.currentTimeMillis() - timeStamp) / 1000 + "seg");
+                            (System.currentTimeMillis() - this.timeStamp) / 1000 + "seg");
 
     }
 
